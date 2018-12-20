@@ -10,3 +10,9 @@ def register(request):
 
 def signin(request):
 	return render(request, 'signin/signin.html')
+
+def dashboard(request):
+	return render(request, 'userprofile_template/dashboard.html')
+
+def user(request):
+	return render(request, 'userprofile_template/user.html')
