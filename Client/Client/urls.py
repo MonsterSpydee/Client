@@ -17,7 +17,8 @@ from django.contrib import admin
 from django.urls import path
 from . import views as temp_views
 
-urlpatterns = [
+urlpatterns = [\
+    path('admin_page/', temp_views.admin),
     path('profile/', temp_views.user),
     path('dashboard/', temp_views.dashboard),
     path('login/', temp_views.signin),

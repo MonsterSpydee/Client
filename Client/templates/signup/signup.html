@@ -33,18 +33,18 @@
             <div class="card card-4">
                 <div class="card-body">
                     <h2 class="title">Registration Form</h2>
-                    <form method="POST">
+                    
                         <div class="row row-space">
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">first name</label>
-                                    <input class="input--style-4" type="text" name="first_name">
+                                    <input class="input--style-4" type="text" name="first_name" id="first_name">
                                 </div>
                             </div>
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">last name</label>
-                                    <input class="input--style-4" type="text" name="last_name">
+                                    <input class="input--style-4" type="text" name="last_name" id="last_name">
                                 </div>
                             </div>
                         </div>
@@ -78,13 +78,13 @@
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">Username</label>
-                                    <input class="input--style-4" type="text" name="username">
+                                    <input class="input--style-4" type="text" name="username" id="username">
                                 </div>
                             </div>
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">Password</label>
-                                    <input class="input--style-4" type="text" name="phone">
+                                    <input class="input--style-4" type="text" name="phone" id="password">
                                 </div>
                             </div>
                         </div>
@@ -92,16 +92,16 @@
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">Email</label>
-                                    <input class="input--style-4" type="email" name="email">
+                                    <input class="input--style-4" type="email" name="email" id="email">
                                 </div>
                             </div>
                         </div>
                         <div class="input-group">
                             <label class="label">Subject</label>
                             <div class="rs-select2 js-select-simple select--no-search">
-                                <select name="subject">
+                                <select name="subject" id="subject">
                                     <option disabled="disabled" selected="selected">Department</option>
-                                    <option>CS</option>
+                                    <option>CSE</option>
                                     <option>ECE</option>
                                     <option>EEE</option>
                                     <option>ICE</option>
@@ -114,9 +114,9 @@
                             </div>
                         </div>
                         <div class="p-t-15">
-                            <button class="btn btn--radius-2 btn--blue" type="submit">Submit</button>
+                            <button class="btn btn--radius-2 btn--blue" type="submit" id="create_account_btn">Submit</button>
                         </div>
-                    </form>
+                    
                 </div>
             </div>
         </div>
@@ -131,6 +131,101 @@
 
     <!-- Main JS-->
     <script src="{% static 'signup/js/global.js' %}"></script>
+
+    <script>
+
+      $(document).ready(function()
+      {
+        // function getCookie(c_name)
+        // {
+        //     if (document.cookie.length > 0)
+        //     {
+        //         c_start = document.cookie.indexOf(c_name + "=");
+        //         if (c_start != -1)
+        //         {
+        //             c_start = c_start + c_name.length + 1;
+        //             c_end = document.cookie.indexOf(";", c_start);
+        //             if (c_end == -1) c_end = document.cookie.length;
+        //             return unescape(document.cookie.substring(c_start,c_end));
+        //         }
+        //     }
+        //     return "";
+        //  }
+        // $(function () {
+        //     $.ajaxSetup({
+        //         headers: { "X-CSRFToken": getCookie("csrftoken") }
+        //     });
+        // });
+        //var SERVER_IP = ({{ SERVER_IP }}).toString();
+        //console.log(SERVER_IP);
+        var AUTHENTICATION_TOKEN = null;
+        var st = 0;
+        var username, password;
+        $("#create_account_btn").click(function()
+        {
+
+            var first_name = document.getElementById("first_name").value;
+            var last_name = document.getElementById("last_name").value;
+            var email = document.getElementById("email").value;
+            username = document.getElementById("username").value;
+            password = document.getElementById("password").value;
+            var branch = $('#subject option:selected').text();
+          
+          
+            alert(branch);
+            var obj = {"first_name": first_name, "last_name": last_name, "email": email, "username": username, 
+            "password": password, "branch": branch};
+            var myJSON = JSON.stringify(obj);
+
+            alert("HEYYYY!");
+            makePostRequestSignUp("http://127.0.0.1:8000/auth/signup/", myJSON, null, "POST", "json", "div");
+            // console.log(first_name)
+            // console.log(last_name)
+            // console.log(email)
+            // console.log(username)
+            // console.log(password)
+            // console.log(contact_no)
+            // console.log(radioValue)
+        });
+        function makePostRequestSignUp(url, data, headers, httpverb, datatype, dataType, getElementId)
+        {
+
+          $.ajax(
+            {
+              url: url,
+              type: httpverb,
+              data: data,
+              async: true,
+              contentType: 'application/json; charset=utf-8',
+              dataType: 'json',
+              success: function(data)
+              {
+                localStorage.AUTHENTICATION_TOKEN = data.token;
+                //AUTHENTICATION_TOKEN = data.token;
+                //setAuth(AUTHENTICATION_TOKEN);
+                //console.log(AUTHENTICATION_TOKEN);
+                //console.log(data);
+                localStorage.USERNAME = username;
+                console.log(localStorage.AUTHENTICATION_TOKEN);
+              },
+              error: function(data)
+              {
+                // document.getElementById("modal_text").innerHTML = "Enter valid details to continue";
+                // document.getElementById("heading_id").innerHTML = "Registration Failed!";
+                // $("#myModal").modal();
+                alert("Some error!");
+              }
+            }
+          ).done(function(msg)
+            {
+              location.href = "../dashboard/";
+              alert("Success!");
+            }
+          );
+        }
+      });
+    </script>
+
 
 </body><!-- This templates was made by Colorlib (https://colorlib.com) -->
 

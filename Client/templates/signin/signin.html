@@ -31,13 +31,26 @@
 					<img src="{% static 'signin/images/img-01.png' %}" alt="IMG">
 				</div>
 
-				<form class="login100-form validate-form">
+				<div class="login100-form validate-form">
 					<span class="login100-form-title">
 						Student Login
 					</span>
-
+					<div>
+                        <div>
+                            <div class="p-t-10">
+                                <label class="radio-container m-r-45">Admin
+                                    <input type="radio" checked="checked" name="user_type" value="Admin">
+                                    <span class="checkmark"></span>
+                                </label>
+                                <label class="radio-container">Student
+                                    <input type="radio" name="user_type" value="Student">
+                                    <span class="checkmark"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
 					<div class="wrap-input100 validate-input" data-validate = "Username is required">
-						<input class="input100" type="text" name="username" placeholder="Username" style="resize: vertical;">
+						<input class="input100" type="text" id="username" placeholder="Username" style="resize: vertical;">
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
 							<i class="fa fa-address-book" aria-hidden="true"></i>
@@ -45,7 +58,7 @@
 					</div>
 
 					<div class="wrap-input100 validate-input" data-validate = "Password is required">
-						<input class="input100" type="password" name="pass" placeholder="Password">
+						<input class="input100" type="password" id="password" placeholder="Password">
 						<span class="focus-input100"></span>
 						<span class="symbol-input100">
 							<i class="fa fa-lock" aria-hidden="true"></i>
@@ -53,7 +66,7 @@
 					</div>
 					
 					<div class="container-login100-form-btn">
-						<button class="login100-form-btn">
+						<button class="login100-form-btn" id="sign_in_btn">
 							Login
 						</button>
 					</div>
@@ -73,7 +86,7 @@
 							<i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
 						</a>
 					</div>
-				</form>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -97,6 +110,74 @@
 	</script>
 <!--===============================================================================================-->
 	<script src="{% static 'js/main.js' %}"></script>
+
+	<script>
+      $(document).ready(function()
+      {
+        var AUTHENTICATION_TOKEN = null;
+        var st = 0;
+        var username, password;
+        $("#sign_in_btn").click(function()
+        {
+          username = document.getElementById("username").value;
+          password = document.getElementById("password").value;
+          var radioValue = $("input[name='user_type']:checked").val();
+          if(!radioValue)
+          {
+            alert('Enter All Information');
+          }
+          else
+          {
+            if(radioValue == "Student")
+            {
+            	alert("HEYY");
+              st = 1;
+            }
+            var obj = {"username": username, "password": password, "isAdmin": st};
+            var myJSON = JSON.stringify(obj);
+            makePostRequestSignIn("http://127.0.0.1:8000/auth/signin/", myJSON, null, "POST", "json", "div");
+          }
+        });
+        function makePostRequestSignIn(url, data, headers, httpverb, datatype, dataType, getElementId)
+        {
+          $.ajax(
+            {
+              url: url,
+              type: httpverb,
+              data: data,
+              async: true,
+              contentType: 'application/json; charset=utf-8',
+              dataType: 'text json',
+              success: function(data)
+              {
+                var returnedData = JSON.parse(data);
+                AUTHENTICATION_TOKEN = returnedData.token;
+                localStorage.AUTHENTICATION_TOKEN = AUTHENTICATION_TOKEN;
+                localStorage.USERNAME = username;
+                localStorage.IS_STUDENT = st;
+                console.log(returnedData);
+                //console.log(data);
+              },
+              error : function(data)
+              {
+                // document.getElementById("modal_text").innerHTML = "Enter correct credentials to continue";
+                // document.getElementById("heading_id").innerHTML = "Sign In Failed!";
+                // $("#myModal").modal();
+                alert("Some error!");
+              }
+            }
+          ).done(function(msg)
+            {
+              if(st == 0)
+                location.href = "../admin_page/";
+              else
+                location.href = "../dashboard/";
+              //alert('done');
+            }
+          );
+        }
+      });
+    </script>
 
 </body>
 </html>

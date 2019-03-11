@@ -16,3 +16,6 @@ def dashboard(request):
 
 def user(request):
 	return render(request, 'userprofile_template/user.html')
+
+def admin(request):
+	return render(request, 'Admin/index.html')
