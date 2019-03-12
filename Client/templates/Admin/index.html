@@ -37,7 +37,7 @@
                             <div class="input-group">
                             <label class="label">Choose Department</label>
                             <div class="rs-select2 js-select-simple select--no-search">
-                                <select name="subject">
+                                <select name="subject" id="branch">
                                     <option disabled="disabled" selected="selected">Department</option>
                                     <option>CSE</option>
                                     <option>ECE</option>
@@ -55,7 +55,7 @@
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">Enter Course ID</label>
-                                    <input class="input--style-4" type="text" name="courseID">
+                                    <input class="input--style-4" type="text" id="courseID">
                                 </div>
                             </div>
                         </div>
@@ -64,13 +64,13 @@
                             <div class="col-2">
                                 <div class="input-group">
                                     <label class="label">Enter Course Name</label>
-                                    <input class="input--style-4" type="text" name="courseName">
+                                    <input class="input--style-4" type="text" id="courseName">
                                 </div>
                             </div>
                         </div>
 
                         <div class="p-t-15">
-                            <button class="btn btn--radius-2 btn--blue" type="submit">Submit</button>
+                            <button class="btn btn--radius-2 btn--blue" type="submit" onclick="add_course()">Submit</button>
                         </div>
 
                          <div class="row row-space">
@@ -116,8 +116,59 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>  
 
+    <script type="text/javascript">
+        function add_course()
+        {
+            var courseName = document.getElementById("courseName").value;
+            var courseID = document.getElementById("courseID").value;
+            var branch = $('#branch option').filter(':selected').text();
+            console.log(courseName + " " + courseID + " " + branch);
+            //console.log("HELLO");
+            //var obj = {"type": "1", "password": password, "isAdmin": st};
+            //makePostRequestCourseADD("127.0.0.0:8000/addCourse/",)
+        }
+
+        function makePostRequestCourseADD(url, data, headers, httpverb, datatype, dataType, getElementId)
+        {
+          $.ajax(
+            {
+              url: url,
+              type: httpverb,
+              data: data,
+              async: true,
+              contentType: 'application/json; charset=utf-8',
+              dataType: 'text json',
+              success: function(data)
+              {
+                var returnedData = JSON.parse(data);
+                AUTHENTICATION_TOKEN = returnedData.token;
+                localStorage.AUTHENTICATION_TOKEN = AUTHENTICATION_TOKEN;
+                localStorage.USERNAME = username;
+                localStorage.IS_STUDENT = st;
+                console.log(returnedData);
+                //console.log(data);
+              },
+              error : function(data)
+              {
+                // document.getElementById("modal_text").innerHTML = "Enter correct credentials to continue";
+                // document.getElementById("heading_id").innerHTML = "Sign In Failed!";
+                // $("#myModal").modal();
+                alert("Some error!");
+              }
+            }
+          ).done(function(msg)
+            {
+              if(st == 0)
+                location.href = "../admin_page/";
+              else
+                location.href = "../dashboard/";
+              //alert('done');
+            }
+          );
+        }
+    </script>
     <!-- Jquery JS-->
     <script src="{% static 'Admin/js/jquery/jquery.min.js' %}"></script>
     <!-- Vendor JS-->
